@@ -3,31 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic-Tac-Toe Game</title>
-    <link rel="stylesheet" href="style.css"/>
+    <title>Tic-Tac-Toe Pro</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="msg-container hide">
-        <p id="msg">Winner</p>
-        <button id="new-btn">New Game</button>
-    </div>
-    <main>
-        <h1>Tic-Tac-Toe</h1>
-        <div class="container">
-            <div class="game">
-                <button class="box"></button>
-                <button class="box"></button>
-                <button class="box"></button>
-                <button class="box"></button>
-                <button class="box"></button>
-                <button class="box"></button>
-                <button class="box"></button>
-                <button class="box"></button>
-                <button class="box"></button>
+    <div class="container">
+        <header>
+            <h1>Tic-Tac-Toe Pro</h1>
+        </header>
+
+        <!-- Mode Selection -->
+        <div id="mode-selection" class="screen">
+            <h2>Select Game Mode</h2>
+            <div class="button-group">
+                <button class="btn primary" onclick="selectMode('1player')">1 Player (vs AI)</button>
+                <button class="btn primary" onclick="selectMode('2player')">2 Players</button>
             </div>
         </div>
-        <button id="reset-btn">Reset Game</button>
-    </main>
+
+        <!-- Size Selection -->
+        <div id="size-selection" class="screen hidden">
+            <h2>Select Board Size</h2>
+            <div class="button-group">
+                <button class="btn secondary" onclick="selectSize(3)">3×3</button>
+                <button class="btn secondary" onclick="selectSize(5)">5×5</button>
+                <button class="btn secondary" onclick="selectSize(7)">7×7</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen hidden">
+            <div class="game-info">
+                <div class="current-player">
+                    <span id="current-turn">Player X's Turn</span>
+                </div>
+                <button class="btn small" onclick="showRules()">Rules</button>
+            </div>
+            
+            <div id="game-board" class="board"></div>
+            
+            <div class="game-controls">
+                <button class="btn secondary" onclick="resetGame()">New Game</button>
+                <button class="btn outline" onclick="goToModeSelection()">Change Mode</button>
+            </div>
+        </div>
+
+        <!-- Rules Modal -->
+        <div id="rules-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>How to Play</h3>
+                <ul>
+                    <li><strong>3×3:</strong> Get 3 in a row to win</li>
+                    <li><strong>5×5:</strong> Get 4 in a row to win</li>
+                    <li><strong>7×7:</strong> Get 5 in a row to win</li>
+                </ul>
+                <p>Connect your symbols horizontally, vertically, or diagonally!</p>
+                <button class="btn primary" onclick="closeRules()">Got it!</button>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="game-result"></h3>
+                <div class="button-group">
+                    <button class="btn primary" onclick="playAgain()">Play Again</button>
+                    <button class="btn outline" onclick="goToModeSelection()">Main Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
