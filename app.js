@@ -137,9 +137,13 @@ function endGame(result) {
     els.boxes.forEach(box => box.disabled = true);
     
     if (result.includes('Draw')) {
-        els.victoryTitle.textContent = 'DRAW!';
-        els.winnerBadge.textContent = 'Well Played!';
-        els.victoryIcon.querySelector('.crown').textContent = '🤝';
+        els.victoryTitle.textContent = 'EPIC DRAW!';
+        els.winnerBadge.textContent = 'Perfectly Matched!';
+        els.victoryIcon.querySelector('.crown').textContent = '⚡';
+        // Change winner badge color for draw
+        els.winnerBadge.style.background = 'linear-gradient(135deg, rgba(84, 134, 135, 0.8) 0%, rgba(84, 134, 135, 0.6) 100%)';
+        // Different vibration pattern for draw
+        navigator.vibrate && navigator.vibrate([100, 50, 100, 50, 100]);
     } else {
         const winner = game.player;
         const winnerName = game.mode === 'single' && winner === 'O' ? 'Computer' : `Player ${winner}`;
@@ -147,12 +151,13 @@ function endGame(result) {
         els.victoryTitle.textContent = 'VICTORY!';
         els.winnerBadge.textContent = `${winnerName} Dominates!`;
         els.victoryIcon.querySelector('.crown').textContent = winner === 'X' ? '👑' : '🏆';
+        // Reset winner badge color for wins
+        els.winnerBadge.style.background = 'linear-gradient(135deg, rgba(176, 65, 62, 0.8) 0%, rgba(176, 65, 62, 0.6) 100%)';
+        // Victory vibration
+        navigator.vibrate && navigator.vibrate([200, 100, 200]);
     }
     
     els.victoryModal.classList.remove('hide');
-    
-    // Add impact sound effect simulation
-    navigator.vibrate && navigator.vibrate([200, 100, 200]);
 }
 
 // Reset game
