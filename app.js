@@ -3,9 +3,9 @@ let gameBoard = ['', '', '', '', '', '', '', '', ''];
 let gameActive = true;
 
 const winningConditions = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-    [0, 4, 8], [2, 4, 6] // Diagonals
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+    [0, 4, 8], [2, 4, 6]
 ];
 
 const cells = document.querySelectorAll('.cell');
@@ -15,7 +15,6 @@ const victoryPopup = document.getElementById('victoryPopup');
 const drawPopup = document.getElementById('drawPopup');
 const victoryTitle = document.getElementById('victoryTitle');
 
-// Initialize the game
 function initGame() {
     cells.forEach((cell, index) => {
         cell.addEventListener('click', () => handleCellClick(index));
@@ -26,13 +25,11 @@ function initGame() {
 function handleCellClick(index) {
     if (gameBoard[index] !== '' || !gameActive) return;
 
-    // Place the mark
     gameBoard[index] = currentPlayer;
     const cell = cells[index];
     cell.textContent = currentPlayer;
     cell.classList.add('taken', currentPlayer.toLowerCase(), 'fade-in');
 
-    // Check for win or draw
     if (checkWinner()) {
         gameActive = false;
         highlightWinningCells();
@@ -45,7 +42,6 @@ function handleCellClick(index) {
             showDrawPopup();
         }, 500);
     } else {
-        // Switch players
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
         updateDisplay();
     }
@@ -113,5 +109,4 @@ function resetGame() {
     updateDisplay();
 }
 
-// Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', initGame);
