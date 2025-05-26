@@ -3,71 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic-Tac-Toe Game</title>
+    <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Theme Toggle -->
-    <div class="theme-toggle">
-        <input type="checkbox" id="theme-switch">
-        <label for="theme-switch" class="switch">
-            <span class="slider"></span>
-        </label>
-        <span class="theme-label">Dark Mode</span>
+    <div class="game-container">
+        <h1 class="game-title">Tic Tac Toe</h1>
+        
+        <div class="game-info">
+            <div class="current-player" id="currentPlayer">Player X's Turn</div>
+        </div>
+
+        <div class="game-status" id="gameStatus"></div>
+
+        <div class="game-board" id="gameBoard">
+            <button class="cell" data-index="0"></button>
+            <button class="cell" data-index="1"></button>
+            <button class="cell" data-index="2"></button>
+            <button class="cell" data-index="3"></button>
+            <button class="cell" data-index="4"></button>
+            <button class="cell" data-index="5"></button>
+            <button class="cell" data-index="6"></button>
+            <button class="cell" data-index="7"></button>
+            <button class="cell" data-index="8"></button>
+        </div>
+
+        <div class="game-controls">
+            <button class="btn btn-primary" onclick="resetGame()">New Game</button>
+        </div>
     </div>
 
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Main Menu -->
-        <div id="main-menu" class="screen active">
-            <h1>Tic-Tac-Toe</h1>
-            <div class="menu-buttons">
-                <button id="single-player-btn" class="menu-btn">1 Player vs AI</button>
-                <button id="two-player-btn" class="menu-btn">2 Players</button>
-            </div>
-        </div>
-
-        <!-- Game Screen -->
-        <div id="game-screen" class="screen">
-            <div class="game-header">
-                <h2 id="game-title">Tic-Tac-Toe</h2>
-                <div class="game-info">
-                    <span id="current-player">Player X's Turn</span>
-                    <button id="reset-btn" class="reset-btn">Reset Game</button>
-                </div>
-            </div>
-
-            <!-- Game Board -->
-            <div id="game-board" class="board">
-                <div class="cell" data-index="0"></div>
-                <div class="cell" data-index="1"></div>
-                <div class="cell" data-index="2"></div>
-                <div class="cell" data-index="3"></div>
-                <div class="cell" data-index="4"></div>
-                <div class="cell" data-index="5"></div>
-                <div class="cell" data-index="6"></div>
-                <div class="cell" data-index="7"></div>
-                <div class="cell" data-index="8"></div>
-            </div>
-
-            <button id="back-to-menu" class="back-btn">Back to Menu</button>
-        </div>
-
-        <!-- Game Over Screen -->
-        <div id="game-over-screen" class="screen">
-            <div class="game-over-content">
-                <h2 id="game-result"></h2>
-                <div class="game-over-buttons">
-                    <button id="new-game-btn" class="menu-btn">New Game</button>
-                    <button id="main-menu-btn" class="menu-btn secondary">Main Menu</button>
-                </div>
+    <!-- Victory Popup -->
+    <div class="victory-popup" id="victoryPopup">
+        <div class="victory-content">
+            <div class="victory-animation">🎉</div>
+            <h2 class="victory-title" id="victoryTitle">Player X Wins!</h2>
+            <p class="victory-message">Congratulations on your victory!</p>
+            <div class="victory-buttons">
+                <button class="btn btn-primary" onclick="playAgain()">Play Again</button>
+                <button class="btn btn-secondary" onclick="closePopup()">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Confetti Container -->
-    <div id="confetti-container"></div>
+    <!-- Draw Popup -->
+    <div class="draw-popup" id="drawPopup">
+        <div class="draw-content">
+            <div class="draw-animation">🤝</div>
+            <h2 class="draw-title">It's a Draw!</h2>
+            <p class="draw-message">Well played by both players!</p>
+            <div class="draw-buttons">
+                <button class="btn btn-primary" onclick="playAgain()">Play Again</button>
+                <button class="btn btn-secondary" onclick="closePopup()">Close</button>
+            </div>
+        </div>
+    </div>
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
