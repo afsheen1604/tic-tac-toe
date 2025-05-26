@@ -171,7 +171,6 @@ body {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* Victory Popup Styles */
 .victory-popup, .draw-popup {
     position: fixed;
     top: 0;
