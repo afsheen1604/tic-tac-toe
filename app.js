@@ -1,88 +1,175 @@
-const gameState = {
+// Game State
+let game = {
     board: Array(9).fill(''),
-    currentPlayer: 'O',
-    gameActive: true,
-    moveCount: 0
+    player: 'X',
+    active: false,
+    mode: null, // 'single' or 'multi'
+    moves: 0
 };
 
-const winPatterns = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-    [0, 4, 8], [2, 4, 6] // diagonals
+// Win patterns
+const wins = [
+    [0,1,2], [3,4,5], [6,7,8], // rows
+    [0,3,6], [1,4,7], [2,5,8], // cols
+    [0,4,8], [2,4,6] // diagonals
 ];
 
-const elements = {
+// DOM elements
+const els = {
+    startScreen: document.getElementById('start-screen'),
+    gameContainer: document.getElementById('game-container'),
     boxes: document.querySelectorAll('.box'),
+    turnIndicator: document.getElementById('turn-indicator'),
+    celebrationModal: document.getElementById('celebration-modal'),
+    celebrationResult: document.getElementById('celebration-result'),
+    celebrationMessage: document.getElementById('celebration-message'),
     resetBtn: document.getElementById('reset-btn'),
-    newGameBtn: document.getElementById('new-game-btn'),
-    modal: document.getElementById('game-modal'),
-    result: document.getElementById('game-result'),
-    turnIndicator: document.getElementById('turn-indicator')
+    homeBtn: document.getElementById('home-btn'),
+    playAgainBtn: document.getElementById('play-again-btn'),
+    menuBtn: document.getElementById('menu-btn')
 };
 
-function initGame() {
-    elements.boxes.forEach((box, index) => {
-        box.addEventListener('click', () => handleMove(index));
+// Initialize game
+function init() {
+    els.boxes.forEach((box, i) => {
+        box.addEventListener('click', () => makeMove(i));
     });
     
-    elements.resetBtn.addEventListener('click', resetGame);
-    elements.newGameBtn.addEventListener('click', resetGame);
-    
+    els.resetBtn.addEventListener('click', resetGame);
+    els.homeBtn.addEventListener('click', showMainMenu);
+    els.playAgainBtn.addEventListener('click', resetGame);
+    els.menuBtn.addEventListener('click', showMainMenu);
+}
+
+// Start game with selected mode
+function startGame(mode) {
+    game.mode = mode;
+    game.active = true;
+    els.startScreen.classList.add('hide');
+    els.gameContainer.classList.remove('hide');
     updateTurnIndicator();
 }
 
-function handleMove(index) {
-    if (!gameState.gameActive || gameState.board[index]) return;
+// Make a move
+function makeMove(index) {
+    if (!game.active || game.board[index]) return;
     
-    gameState.board[index] = gameState.currentPlayer;
-    elements.boxes[index].textContent = gameState.currentPlayer;
-    elements.boxes[index].disabled = true;
-    gameState.moveCount++;
+    game.board[index] = game.player;
+    els.boxes[index].textContent = game.player;
+    els.boxes[index].disabled = true;
+    game.moves++;
     
-    if (checkWinner()) {
-        endGame(`Player ${gameState.currentPlayer} Wins!`);
-    } else if (gameState.moveCount === 9) {
-        endGame("It's a Draw!");
+    if (checkWin()) {
+        endGame(`Player ${game.player} Wins!`, `${game.player} is the champion!`);
+    } else if (game.moves === 9) {
+        endGame("It's a Draw!", "Great game, try again!");
     } else {
-        gameState.currentPlayer = gameState.currentPlayer === 'O' ? 'X' : 'O';
-        updateTurnIndicator();
+        switchPlayer();
+        if (game.mode === 'single' && game.player === 'O') {
+            setTimeout(botMove, 500);
+        }
     }
 }
 
-function checkWinner() {
-    return winPatterns.some(pattern => {
+// Bot move (simple AI)
+function botMove() {
+    if (!game.active) return;
+    
+    // Try to win
+    let move = findWinningMove('O');
+    if (move === -1) {
+        // Block player
+        move = findWinningMove('X');
+        if (move === -1) {
+            // Take center or random
+            move = game.board[4] === '' ? 4 : getRandomMove();
+        }
+    }
+    
+    if (move !== -1) {
+        makeMove(move);
+    }
+}
+
+// Find winning move for player
+function findWinningMove(player) {
+    for (let pattern of wins) {
         const [a, b, c] = pattern;
-        return gameState.board[a] && 
-               gameState.board[a] === gameState.board[b] && 
-               gameState.board[a] === gameState.board[c];
+        const line = [game.board[a], game.board[b], game.board[c]];
+        
+        if (line.filter(cell => cell === player).length === 2 && line.includes('')) {
+            return pattern[line.indexOf('')];
+        }
+    }
+    return -1;
+}
+
+// Get random available move
+function getRandomMove() {
+    const available = game.board.map((cell, i) => cell === '' ? i : null).filter(i => i !== null);
+    return available.length > 0 ? available[Math.floor(Math.random() * available.length)] : -1;
+}
+
+// Check for win
+function checkWin() {
+    return wins.some(pattern => {
+        const [a, b, c] = pattern;
+        return game.board[a] && game.board[a] === game.board[b] && game.board[a] === game.board[c];
     });
 }
 
-function endGame(message) {
-    gameState.gameActive = false;
-    elements.result.textContent = message;
-    elements.modal.classList.remove('hide');
-    elements.boxes.forEach(box => box.disabled = true);
+// Switch player
+function switchPlayer() {
+    game.player = game.player === 'X' ? 'O' : 'X';
+    updateTurnIndicator();
 }
 
-function resetGame() {
-    gameState.board.fill('');
-    gameState.currentPlayer = 'O';
-    gameState.gameActive = true;
-    gameState.moveCount = 0;
+// Update turn indicator
+function updateTurnIndicator() {
+    const playerName = game.mode === 'single' && game.player === 'O' ? 'Computer' : `Player ${game.player}`;
+    els.turnIndicator.textContent = `${playerName}'s Turn`;
+}
+
+// End game with celebration
+function endGame(title, message) {
+    game.active = false;
+    els.boxes.forEach(box => box.disabled = true);
     
-    elements.boxes.forEach(box => {
+    els.celebrationResult.textContent = title;
+    els.celebrationMessage.textContent = message;
+    els.celebrationModal.classList.remove('hide');
+    
+    // Auto-hide celebration after 5 seconds
+    setTimeout(() => {
+        if (!els.celebrationModal.classList.contains('hide')) {
+            els.celebrationModal.classList.add('hide');
+        }
+    }, 5000);
+}
+
+// Reset game
+function resetGame() {
+    game.board.fill('');
+    game.player = 'X';
+    game.active = true;
+    game.moves = 0;
+    
+    els.boxes.forEach(box => {
         box.textContent = '';
         box.disabled = false;
     });
     
-    elements.modal.classList.add('hide');
+    els.celebrationModal.classList.add('hide');
     updateTurnIndicator();
 }
 
-function updateTurnIndicator() {
-    elements.turnIndicator.textContent = `Player ${gameState.currentPlayer}'s Turn`;
+// Show main menu
+function showMainMenu() {
+    els.gameContainer.classList.add('hide');
+    els.celebrationModal.classList.add('hide');
+    els.startScreen.classList.remove('hide');
+    resetGame();
 }
 
-// Initialize the game when DOM is loaded
-document.addEventListener('DOMContentLoaded', initGame);
+// Initialize when DOM loads
+document.addEventListener('DOMContentLoaded', init);

@@ -7,15 +7,36 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
+    <!-- Start Screen -->
+    <div class="start-screen" id="start-screen">
+        <div class="start-container">
+            <h1>Tic Tac Toe</h1>
+            <p>Choose your game mode</p>
+            <div class="mode-buttons">
+                <button class="mode-btn" onclick="startGame('single')">
+                    <span>🤖</span>
+                    <div>1 Player</div>
+                    <small>vs Computer</small>
+                </button>
+                <button class="mode-btn" onclick="startGame('multi')">
+                    <span>👥</span>
+                    <div>2 Players</div>
+                    <small>Local Play</small>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="game-container hide" id="game-container">
         <header>
             <h1>Tic Tac Toe</h1>
             <div class="player-turn">
-                <span id="turn-indicator">Player O's Turn</span>
+                <span id="turn-indicator">Player X's Turn</span>
             </div>
         </header>
         
-        <div class="game-board">
+        <div class="game-board" id="game-board">
             <button class="box" data-index="0"></button>
             <button class="box" data-index="1"></button>
             <button class="box" data-index="2"></button>
@@ -29,13 +50,19 @@
         
         <div class="controls">
             <button id="reset-btn">Reset Game</button>
+            <button id="home-btn">Main Menu</button>
         </div>
     </div>
     
-    <div class="modal hide" id="game-modal">
+    <!-- Celebration Modal -->
+    <div class="celebration-modal hide" id="celebration-modal">
+        <div class="confetti"></div>
         <div class="modal-content">
-            <h2 id="game-result">Winner!</h2>
-            <button id="new-game-btn">New Game</button>
+            <div class="trophy">🏆</div>
+            <h2 id="celebration-result">Congratulations!</h2>
+            <p id="celebration-message">You won the game!</p>
+            <button id="play-again-btn">Play Again</button>
+            <button id="menu-btn">Main Menu</button>
         </div>
     </div>
     
