@@ -20,9 +20,10 @@ const els = {
     gameContainer: document.getElementById('game-container'),
     boxes: document.querySelectorAll('.box'),
     turnIndicator: document.getElementById('turn-indicator'),
-    celebrationModal: document.getElementById('celebration-modal'),
-    celebrationResult: document.getElementById('celebration-result'),
-    celebrationMessage: document.getElementById('celebration-message'),
+    victoryModal: document.getElementById('victory-modal'),
+    victoryIcon: document.getElementById('victory-icon'),
+    victoryTitle: document.getElementById('victory-title'),
+    winnerBadge: document.getElementById('winner-badge'),
     resetBtn: document.getElementById('reset-btn'),
     homeBtn: document.getElementById('home-btn'),
     playAgainBtn: document.getElementById('play-again-btn'),
@@ -60,9 +61,9 @@ function makeMove(index) {
     game.moves++;
     
     if (checkWin()) {
-        endGame(`Player ${game.player} Wins!`, `${game.player} is the champion!`);
+        endGame(`Player ${game.player} Wins!`);
     } else if (game.moves === 9) {
-        endGame("It's a Draw!", "Great game, try again!");
+        endGame("It's a Draw!");
     } else {
         switchPlayer();
         if (game.mode === 'single' && game.player === 'O') {
@@ -130,21 +131,28 @@ function updateTurnIndicator() {
     els.turnIndicator.textContent = `${playerName}'s Turn`;
 }
 
-// End game with celebration
-function endGame(title, message) {
+// End game with epic victory screen
+function endGame(result) {
     game.active = false;
     els.boxes.forEach(box => box.disabled = true);
     
-    els.celebrationResult.textContent = title;
-    els.celebrationMessage.textContent = message;
-    els.celebrationModal.classList.remove('hide');
+    if (result.includes('Draw')) {
+        els.victoryTitle.textContent = 'DRAW!';
+        els.winnerBadge.textContent = 'Well Played!';
+        els.victoryIcon.querySelector('.crown').textContent = '🤝';
+    } else {
+        const winner = game.player;
+        const winnerName = game.mode === 'single' && winner === 'O' ? 'Computer' : `Player ${winner}`;
+        
+        els.victoryTitle.textContent = 'VICTORY!';
+        els.winnerBadge.textContent = `${winnerName} Dominates!`;
+        els.victoryIcon.querySelector('.crown').textContent = winner === 'X' ? '👑' : '🏆';
+    }
     
-    // Auto-hide celebration after 5 seconds
-    setTimeout(() => {
-        if (!els.celebrationModal.classList.contains('hide')) {
-            els.celebrationModal.classList.add('hide');
-        }
-    }, 5000);
+    els.victoryModal.classList.remove('hide');
+    
+    // Add impact sound effect simulation
+    navigator.vibrate && navigator.vibrate([200, 100, 200]);
 }
 
 // Reset game
@@ -159,14 +167,14 @@ function resetGame() {
         box.disabled = false;
     });
     
-    els.celebrationModal.classList.add('hide');
+    els.victoryModal.classList.add('hide');
     updateTurnIndicator();
 }
 
 // Show main menu
 function showMainMenu() {
     els.gameContainer.classList.add('hide');
-    els.celebrationModal.classList.add('hide');
+    els.victoryModal.classList.add('hide');
     els.startScreen.classList.remove('hide');
     resetGame();
 }
